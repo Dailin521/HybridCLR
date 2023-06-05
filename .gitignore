@@ -1,0 +1,13 @@
+.vsconfig
+*.csproj
+*.sln
+.vs/
+.vscode/
+Library/
+Logs/
+obj/
+Temp/
+UserSettings/Layouts/
+*.7z
+UserSettings/EditorUserSettings.asset
+Assets/StreamingAssets/
