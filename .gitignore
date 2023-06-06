@@ -11,3 +11,5 @@ UserSettings/Layouts/
 *.7z
 UserSettings/EditorUserSettings.asset
 Assets/StreamingAssets/
+HybridCLRData/StrippedAOTDllsTempProj/
+HybridCLRData/
