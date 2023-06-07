@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
+using System.Management.Instrumentation;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -21,7 +22,17 @@ public class LoadDll : MonoBehaviour
                 Debug.Log("Successfully read " + bytes.Length + " bytes.");
                 Assembly hotUpdateAss = Assembly.Load(bytes);
                 Type type = hotUpdateAss.GetType("Hello");
-                type.GetMethod("Run").Invoke(null, null);
+                MethodInfo method = type.GetMethod("Run");
+                object instance = Activator.CreateInstance(type);  // 创建一个类实例
+                Debug.Log("instance: " + instance);
+                object result = method.Invoke(instance, null);  // 调用方法
+                Debug.Log("result: " + result);
+                // 检查并处理返回结果
+                if (result != null)
+                {
+                    // 如果方法有返回值，可以在这里对结果进行处理
+                    Debug.Log("方法返回结果: " + result.ToString());
+                }
             }
             else
             {
@@ -38,7 +49,6 @@ public class LoadDll : MonoBehaviour
         //Debug.LogWarning("");
         //string fileUrl = $"{Application.streamingAssetsPath}/HotUpdate.dll.bytes";
         string fileUrl = "https://cdn-1257380158.cos.ap-nanjing.myqcloud.com/WebGLTest/HotUpdate.dll.bytes";
-
         StartCoroutine(ReadAllBytes(fileUrl, (bytes) =>
         {
             if (bytes != null)
@@ -47,7 +57,17 @@ public class LoadDll : MonoBehaviour
                 Debug.Log("Successfully read " + bytes.Length + " bytes.");
                 Assembly hotUpdateAss = Assembly.Load(bytes);
                 Type type = hotUpdateAss.GetType("Hello");
-                type.GetMethod("Run").Invoke(null, null);
+                MethodInfo method = type.GetMethod("Run");
+                object instance = Activator.CreateInstance(type);  // 创建一个类实例
+                Debug.Log("instance: " + instance);
+                object result = method.Invoke(instance, null);  // 调用方法
+                Debug.Log("result: " + result);
+                // 检查并处理返回结果
+                if (result != null)
+                {
+                    // 如果方法有返回值，可以在这里对结果进行处理
+                    Debug.Log("方法返回结果: " + result.ToString());
+                }
             }
             else
             {
