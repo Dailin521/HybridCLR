@@ -1,9 +1,17 @@
-﻿using System.Collections;
+﻿using HybridCLR;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
+using UnityEngine.Networking;
 
-public class Hello
+public class Hello : MonoBehaviour
 {
+    private void Start()
+    {
+        Run();
+    }
     public void Run()
     {
         Debug.Log("Hello, HybridCLR");
@@ -12,14 +20,11 @@ public class Hello
         Debug.Log("Hello, HybridCLR");
         Debug.Log("dal");
         Debug.Log("dal2023-06-07");
-        test();
-    }
-    void test()
-    {
-        ints.Add(1);
+        List<string> strings = new();
         strings.Add("泛型共享测试");
+        Debug.Log(strings[0]);
+        Debug.Log("泛型共享测试");
     }
-    List<Vector3> vector3s = new();
-    List<string> strings = new();
-    List<int> ints = new();
+
+
 }

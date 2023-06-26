@@ -1,7 +1,7 @@
-﻿using System;
+﻿using HybridCLR;
+using System;
 using System.Collections;
-using System.IO;
-using System.Management.Instrumentation;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -10,6 +10,7 @@ public class LoadDll : MonoBehaviour
 {
     void Start()
     {
+        LoadMetadataForAOTAssemblies();
         // Editor环境下，HotUpdate.dll.bytes已经被自动加载，不需要加载，重复加载反而会出问题。
 #if !UNITY_EDITOR
        string fileUrl = "https://cdn-1257380158.cos.ap-nanjing.myqcloud.com/WebGLTest/HotUpdate.dll.bytes";
@@ -18,21 +19,11 @@ public class LoadDll : MonoBehaviour
         {
             if (bytes != null)
             {
-                // Do something with the bytes
                 Debug.Log("Successfully read " + bytes.Length + " bytes.");
                 Assembly hotUpdateAss = Assembly.Load(bytes);
                 Type type = hotUpdateAss.GetType("Hello");
-                MethodInfo method = type.GetMethod("Run");
-                object instance = Activator.CreateInstance(type);  // 创建一个类实例
-                Debug.Log("instance: " + instance);
-                object result = method.Invoke(instance, null);  // 调用方法
-                Debug.Log("result: " + result);
-                // 检查并处理返回结果
-                if (result != null)
-                {
-                    // 如果方法有返回值，可以在这里对结果进行处理
-                    Debug.Log("方法返回结果: " + result.ToString());
-                }
+                GameObject go = new GameObject("TestHot");
+                go.AddComponent(type);
             }
             else
             {
@@ -57,17 +48,8 @@ public class LoadDll : MonoBehaviour
                 Debug.Log("Successfully read " + bytes.Length + " bytes.");
                 Assembly hotUpdateAss = Assembly.Load(bytes);
                 Type type = hotUpdateAss.GetType("Hello");
-                MethodInfo method = type.GetMethod("Run");
-                object instance = Activator.CreateInstance(type);  // 创建一个类实例
-                Debug.Log("instance: " + instance);
-                object result = method.Invoke(instance, null);  // 调用方法
-                Debug.Log("result: " + result);
-                // 检查并处理返回结果
-                if (result != null)
-                {
-                    // 如果方法有返回值，可以在这里对结果进行处理
-                    Debug.Log("方法返回结果: " + result.ToString());
-                }
+                GameObject go = new GameObject("TestHot");
+                go.AddComponent(type);
             }
             else
             {
@@ -76,6 +58,29 @@ public class LoadDll : MonoBehaviour
             }
         }));
 #endif
+    }
+    private void LoadMetadataForAOTAssemblies()
+    {
+        List<string> aotDllList = new List<string>
+        {
+            "mscorlib.dll",
+            "System.dll",
+            "System.Core.dll", // 如果使用了Linq，需要这个
+            // "Newtonsoft.Json.dll", 
+            // "protobuf-net.dll",
+        };
+
+        foreach (var aotDllName in aotDllList)
+        {
+            // string url =https://cdn-1257380158.cos.ap-nanjing.myqcloud.com/WebGLTest/AOTDLL/mscorlib.dll.bytes
+            string url = "https://cdn-1257380158.cos.ap-nanjing.myqcloud.com/WebGLTest/AOTDLL/" + $"{aotDllName}.bytes";
+            StartCoroutine(ReadAllBytes(url, (bytes) =>
+            {
+                byte[] dllBytes = bytes;
+                int err = (int)HybridCLR.RuntimeApi.LoadMetadataForAOTAssembly(dllBytes, HomologousImageMode.SuperSet);
+                Debug.Log($"LoadMetadataForAOTAssembly:{aotDllName}. ret:{err}");
+            }));
+        }
     }
     IEnumerator ReadAllBytes(string url, Action<byte[]> onComplete)
     {
