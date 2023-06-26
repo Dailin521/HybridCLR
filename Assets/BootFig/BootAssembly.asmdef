@@ -1,0 +1,18 @@
+{
+    "name": "BootAssembly",
+    "rootNamespace": "",
+    "references": [
+        "GUID:13ba8ce62aa80c74598530029cb2d649",
+        "GUID:e34a5702dd353724aa315fb8011f08c3",
+        "GUID:4d1926c9df5b052469a1c63448b7609a"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
